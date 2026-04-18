@@ -19,7 +19,7 @@ fun UpdateScreen(
     documentId: String,
     initialName: String,
     initialAge: Int,
-    initialSalary: Double,
+    initialSalary: String,
     initialGender: String
 ) {
     // 1. Initialize states with the passed data
@@ -50,8 +50,8 @@ fun UpdateScreen(
         )
         OutlinedTextField(
             value = salary.toString(),
-            onValueChange = { salary = it.toDoubleOrNull() ?: 0.0 },
-            label = { Text("Salary") },
+            onValueChange = { salary = it.toString() ?: "" },
+            label = { Text("Phone") },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(

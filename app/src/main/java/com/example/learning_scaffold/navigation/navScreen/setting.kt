@@ -35,7 +35,6 @@ fun ScreenSetting(navController: NavController) {
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary
             )
-
             // Standard List Item for Dark Mode
             ListItem(
                 headlineContent = { Text("Dark Mode") },
@@ -49,7 +48,6 @@ fun ScreenSetting(navController: NavController) {
             )
 
             HorizontalDivider()
-
             Text(
                 "Profile",
                 modifier = Modifier.padding(16.dp),

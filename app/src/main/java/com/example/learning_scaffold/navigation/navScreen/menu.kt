@@ -67,7 +67,6 @@ fun ScreenMenu(navController: NavController) {
         }
     }
 
-    // Filter logic: Only shows users whose names contain the search query
     val filteredUsers = remember(searchQuery, allUsers) {
         if (searchQuery.isEmpty()) {
             allUsers
@@ -86,7 +85,7 @@ fun ScreenMenu(navController: NavController) {
             value = searchQuery,
             onValueChange = { searchQuery = it },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Search users...") },
+            placeholder = { Text("Search students...") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
@@ -103,7 +102,7 @@ fun ScreenMenu(navController: NavController) {
 
         // 2. User List
         Text(
-            text = "Users (${filteredUsers.size})",
+            text = "Student's (${filteredUsers.size})",
             style = MaterialTheme.typography.titleMedium,
             color = Color.Gray
         )

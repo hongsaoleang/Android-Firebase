@@ -104,7 +104,7 @@ fun ScreenHome(navController: NavController) {
                 )
                 OutlinedTextField(
                     value = salary, onValueChange = { salary = it },
-                    label = { Text("Salary") }, modifier = Modifier.weight(1f),
+                    label = { Text("Phone") }, modifier = Modifier.weight(1f),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
@@ -119,7 +119,7 @@ fun ScreenHome(navController: NavController) {
                 if (name.isBlank() || age.isBlank() || salary.isBlank()) {
                     Toast.makeText(myLocal, "Fill all fields", Toast.LENGTH_SHORT).show()
                 } else {
-                    val newData = DataFriends(name = name, age = age.toInt(), salary = salary.toDouble(), gender = gender)
+                    val newData = DataFriends(name = name, age = age.toInt(), salary = salary.toString(), gender = gender)
                     db.collection("data").add(newData)
                     name = ""; age = ""; salary = ""; gender = ""
                 }
