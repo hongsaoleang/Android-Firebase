@@ -12,7 +12,20 @@
           "package_name": "com.example.learning_scaffold"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "652510658182-3lsq721028lq6q4ujd11ivcmtigcr94g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.learning_scaffold",
+            "certificate_hash": "1febbb8035bae081d05df9f3536989b9bd323b1d"
+          }
+        },
+        {
+          "client_id": "652510658182-88p6hfpdks2hiu5p9s182765ricq9mb6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC667r7tNRJSRGUks_tIRuNv0g412mDNQs"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "652510658182-88p6hfpdks2hiu5p9s182765ricq9mb6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
