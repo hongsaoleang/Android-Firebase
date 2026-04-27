@@ -41,37 +41,37 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.learning_scaffold.navigation.model.DataFriends
+import com.example.learning_scaffold.navigation.model.Student
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun ScreenMenu(navController: NavController) {
     val db = FirebaseFirestore.getInstance()
-    val myLocal = LocalContext.current
+    val context = LocalContext.current
 
     // States
     var searchQuery by remember { mutableStateOf("") }
-    val allUsers = remember { mutableStateListOf<DataFriends>() }
+    val allStudents = remember { mutableStateListOf<Student>() }
 
-    // Fetch data from Firestore
+    // Fetch data from Firestore students collection
     LaunchedEffect(Unit) {
-        db.collection("data").addSnapshotListener { snapshot, error ->
+        db.collection("students").addSnapshotListener { snapshot, error ->
             if (error != null) return@addSnapshotListener
             if (snapshot != null) {
-                allUsers.clear()
+                allStudents.clear()
                 for (document in snapshot.documents) {
-                    val item = document.toObject(DataFriends::class.java)
-                    item?.let { allUsers.add(it.copy(id = document.id)) }
+                    val item = document.toObject(Student::class.java)
+                    item?.let { allStudents.add(it.copy(id = document.id)) }
                 }
             }
         }
     }
 
-    val filteredUsers = remember(searchQuery, allUsers) {
+    val filteredStudents = remember(searchQuery, allStudents) {
         if (searchQuery.isEmpty()) {
-            allUsers
+            allStudents
         } else {
-            allUsers.filter { it.name.contains(searchQuery, ignoreCase = true) }
+            allStudents.filter { it.name.contains(searchQuery, ignoreCase = true) }
         }
     }
 
@@ -100,9 +100,9 @@ fun ScreenMenu(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 2. User List
+        // 2. Student List
         Text(
-            text = "Student's (${filteredUsers.size})",
+            text = "Students (${filteredStudents.size})",
             style = MaterialTheme.typography.titleMedium,
             color = Color.Gray
         )
@@ -114,15 +114,15 @@ fun ScreenMenu(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            items(filteredUsers) { user ->
-                UserListItem(user)
+            items(filteredStudents) { student ->
+                StudentListItem(student)
             }
         }
     }
 }
 
 @Composable
-fun UserListItem(user: DataFriends) {
+fun StudentListItem(student: Student) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
@@ -136,7 +136,6 @@ fun UserListItem(user: DataFriends) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Simple Circle Avatar with first letter
             Surface(
                 modifier = Modifier.size(40.dp),
                 shape = CircleShape,
@@ -144,7 +143,7 @@ fun UserListItem(user: DataFriends) {
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(
-                        text = user.name.take(1).uppercase(),
+                        text = student.name.take(1).uppercase(),
                         color = Color.White,
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -154,8 +153,8 @@ fun UserListItem(user: DataFriends) {
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
-                Text(text = user.name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-                Text(text = "${user.gender} • ${user.age} years old", style = MaterialTheme.typography.bodySmall)
+                Text(text = student.name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                Text(text = "${student.gender} • ${student.age} years old • ${student.phone}", style = MaterialTheme.typography.bodySmall)
             }
         }
     }

@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.learning_scaffold.navigation.model.DataFriends
+import com.example.learning_scaffold.navigation.model.Student
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
@@ -19,23 +19,25 @@ fun UpdateScreen(
     documentId: String,
     initialName: String,
     initialAge: Int,
-    initialSalary: String,
+    initialPhone: String,
     initialGender: String
 ) {
-    // 1. Initialize states with the passed data
     var name by remember { mutableStateOf(initialName) }
-    var age by remember { mutableStateOf(initialAge) }
-    var salary by remember { mutableStateOf(initialSalary) }
+    var age by remember { mutableStateOf(initialAge.toString()) }
+    var phone by remember { mutableStateOf(initialPhone) }
     var gender by remember { mutableStateOf(initialGender) }
 
-    val myLocal = LocalContext.current
+    val context = LocalContext.current
     val db = FirebaseFirestore.getInstance()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ){
+        Text(text = "Update Student Info", style = androidx.compose.material3.MaterialTheme.typography.headlineSmall)
+        
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -43,14 +45,14 @@ fun UpdateScreen(
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            value = age.toString(),
-            onValueChange = { age = it.toIntOrNull() ?: 0 },
+            value = age,
+            onValueChange = { age = it },
             label = { Text("Age") },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            value = salary.toString(),
-            onValueChange = { salary = it.toString() ?: "" },
+            value = phone,
+            onValueChange = { phone = it },
             label = { Text("Phone") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -61,33 +63,30 @@ fun UpdateScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        // --- UPDATE BUTTON ---
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                if (name.isBlank() || gender.isBlank()) {
-                    Toast.makeText(myLocal, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                if (name.isBlank() || age.isBlank() || phone.isBlank() || gender.isBlank()) {
+                    Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 } else {
-                    // 2. Create the data object (make sure DataFriends has these fields)
-                    val updatedFriend = DataFriends(
+                    val updatedStudent = Student(
                         id = documentId,
                         name = name,
-                        age = age,
-                        salary = salary,
+                        age = age.toIntOrNull() ?: 0,
+                        phone = phone,
                         gender = gender
                     )
-                    // 3. Update Firestore
-                    db.collection("data")
+                    db.collection("students")
                         .document(documentId)
-                        .set(updatedFriend)
+                        .set(updatedStudent)
                         .addOnSuccessListener {
-                            Toast.makeText(myLocal, "Updated Successfully!", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack() // Returns to previous screen
+                            Toast.makeText(context, "Updated Successfully!", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(myLocal, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                 }
             }

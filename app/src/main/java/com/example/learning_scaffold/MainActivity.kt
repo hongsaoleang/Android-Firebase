@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.example.learning_scaffold.auth.AuthManager
 import com.example.learning_scaffold.navigation.myNavigation
 import com.example.learning_scaffold.navigation.navScreen.SettingsManager
 import com.example.learning_scaffold.ui.theme.Learning_ScaffoldTheme
@@ -19,23 +20,30 @@ import com.example.learning_scaffold.ui.theme.Learning_ScaffoldTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1. Enables drawing behind the status/navigation bars
         enableEdgeToEdge()
 
         setContent {
             val context = LocalContext.current
-            // Initialize SettingsManager to read saved state
-            val settingsManager = remember { SettingsManager(context) }
 
-            // Collect the Dark Mode state (defaults to false/light)
+            // 2. Initialize your Managers. 'remember' ensures they stay
+            // alive during configuration changes (like rotating the screen).
+            val settingsManager = remember { SettingsManager(context) }
+            val authManager = remember { AuthManager() }
+
+            // 3. Observe the theme state from your DataStore/Preferences
             val isDarkMode by settingsManager.isDarkMode.collectAsState(initial = false)
 
-            // Wrap the entire app in the Theme and pass the state
             Learning_ScaffoldTheme(darkTheme = isDarkMode) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    myNavigation()
+                    // 4. THIS IS THE KEY: Run the navigation function.
+                    // It will look at its 'startDestination' (login) and
+                    // show the LoginScreen first.
+                    myNavigation(authManager = authManager)
                 }
             }
         }

@@ -1,28 +1,24 @@
 package com.example.learning_scaffold.navigation.navScreen
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.learning_scaffold.R // Make sure you have an image in res/drawable
 import com.example.learning_scaffold.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,101 +26,125 @@ import com.example.learning_scaffold.navigation.Screen
 fun ScreenProfile(navController: NavController) {
     val context = LocalContext.current
     val settingsManager = remember { SettingsManager(context) }
+    val savedName by settingsManager.userName.collectAsState(initial = "Student")
 
-    // Collect the persistent username from DataStore
-    val savedName by settingsManager.userName.collectAsState(initial = "Guest")
+    val gradientBrush = Brush.verticalGradient(
+        colors = listOf(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f), MaterialTheme.colorScheme.surface)
+    )
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(title = { Text("My Profile") })
-        }
-    ) { padding ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(gradientBrush)
+    ) {
+        // --- PROFILE HEADER ---
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .padding(top = 40.dp, bottom = 24.dp),
+            contentAlignment = Alignment.Center
         ) {
-            // --- PROFILE HEADER ---
-            Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                    .padding(4.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier.fillMaxSize().clip(CircleShape),
-                    tint = MaterialTheme.colorScheme.outline
-                )
-                // If you have a real image:
-                // Image(painter = painterResource(id = R.drawable.profile_placeholder), ...)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = savedName,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Student at Stanford American School",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // --- INFO CARD ---
-            ElevatedCard(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.elevatedCardColors()
-            ) {
-                Column(modifier = Modifier.padding(8.dp)) {
-                    ProfileMenuItem(
-                        icon = Icons.Default.Email,
-                        label = "Email",
-                        subLabel = "student@stanford.edu.kh"
-                    )
-                    ProfileMenuItem(
-                        icon = Icons.Default.Info,
-                        label = "About Me",
-                        subLabel = "Mobile Developer & Student"
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surface)
+                        .border(4.dp, MaterialTheme.colorScheme.primary, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        modifier = Modifier.size(80.dp),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Text(
+                    text = savedName,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Text(
+                    text = "ID: 2025-AUB-9259",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
             }
+        }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // --- QUICK ACTIONS ---
-            Text(
-                text = "Quick Actions",
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Button(
-                onClick = { navController.navigate(Screen.Setting.route) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium
+        // --- CONTENT CARD ---
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)),
+            shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
+            colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                Icon(Icons.Default.Settings, contentDescription = null)
-                Spacer(Modifier.width(8.dp))
-                Text("Edit Account Settings")
+                Text(
+                    "Academic Information",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    InfoItem(Icons.Default.Email, "Email", "student@stanford.edu.kh")
+                    InfoItem(Icons.Default.LocationOn, "Department", "Computer Science")
+                    InfoItem(Icons.Default.DateRange, "Enrolled", "January 2024")
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = MaterialTheme.colorScheme.outlineVariant)
+
+                Text(
+                    "Settings",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Button(
+                    onClick = { navController.navigate(Screen.Setting.route) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                ) {
+                    Icon(Icons.Default.Settings, contentDescription = null)
+                    Spacer(Modifier.width(12.dp))
+                    Text("Account Settings", fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
 }
 
 @Composable
-fun ProfileMenuItem(icon: ImageVector, label: String, subLabel: String) {
-    ListItem(
-        leadingContent = { Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
-        headlineContent = { Text(label, fontWeight = FontWeight.SemiBold) },
-        supportingContent = { Text(subLabel) }
-    )
+fun InfoItem(icon: ImageVector, label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Surface(
+            modifier = Modifier.size(44.dp),
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(icon, contentDescription = null, modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.primary)
+            }
+        }
+        Spacer(Modifier.width(16.dp))
+        Column {
+            Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(value, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+        }
+    }
 }
